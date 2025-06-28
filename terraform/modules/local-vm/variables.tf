@@ -1,0 +1,9 @@
+variable "cluster_name" {}
+variable "master_count" {}
+variable "worker_count" {}
+variable "master_cpus" {}
+variable "master_mem" {}
+variable "worker_cpus" {}
+variable "worker_mem" {}
+variable "worker_disk_size" {}
+variable "master_disk_size" {}
