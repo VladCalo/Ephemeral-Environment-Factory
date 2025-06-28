@@ -7,3 +7,4 @@ variable "worker_cpus" {}
 variable "worker_mem" {}
 variable "worker_disk_size" {}
 variable "master_disk_size" {}
+variable "ssh_pub_key_path" {}

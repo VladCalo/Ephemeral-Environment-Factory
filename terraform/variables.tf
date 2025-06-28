@@ -34,3 +34,7 @@ variable "master_disk_size" {
   default = "10G"
 }
 
+variable "ssh_pub_key_path" {
+  default = "~/.ssh/id_rsa.pub"
+}
+

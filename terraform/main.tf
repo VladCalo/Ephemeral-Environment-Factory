@@ -19,4 +19,5 @@ module "local_cluster" {
   worker_cpus       = var.worker_cpus
   worker_mem        = var.worker_mem
   worker_disk_size  = var.worker_disk_size
+  ssh_pub_key_path  = var.ssh_pub_key_path
 }
