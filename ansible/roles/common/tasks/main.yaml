@@ -1,0 +1,5 @@
+---
+- name: Create common test file
+  file:
+    path: /tmp/common_test_file
+    state: touch

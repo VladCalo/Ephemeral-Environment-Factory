@@ -1,0 +1,5 @@
+---
+- name: Create master test file
+  file:
+    path: /tmp/master_test_file
+    state: touch
