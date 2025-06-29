@@ -1,0 +1,5 @@
+---
+- name: Create worker test file
+  file:
+    path: /tmp/worker_test_file
+    state: touch
