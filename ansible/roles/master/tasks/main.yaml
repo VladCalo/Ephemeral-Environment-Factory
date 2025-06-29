@@ -1,5 +1,31 @@
 ---
-- name: Create master test file
-  file:
-    path: /tmp/master_test_file
-    state: touch
+- name: Initialize Kubernetes control plane
+  command: >
+    kubeadm init --pod-network-cidr=10.244.0.0/16
+  args:
+    creates: /etc/kubernetes/admin.conf
+  register: kubeadm_init
+  ignore_errors: false
+
+- name: Save kubeadm join command for workers
+  shell: |
+    kubeadm token create --print-join-command
+  register: join_command
+  changed_when: false
+
+- name: Copy kubeconfig to regular user
+  shell: |
+    mkdir -p /home/{{ ansible_user | default('ubuntu') }}/.kube &&
+    cp /etc/kubernetes/admin.conf /home/{{ ansible_user | default('ubuntu') }}/.kube/config &&
+    chown {{ ansible_user | default('ubuntu') }}:{{ ansible_user | default('ubuntu') }} /home/{{ ansible_user | default('ubuntu') }}/.kube/config
+  args:
+    creates: "/home/{{ ansible_user | default('ubuntu') }}/.kube/config"
+
+- name: Apply Flannel CNI
+  shell: |
+    kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  args:
+    creates: /etc/cni/net.d/10-flannel.conflist
+
