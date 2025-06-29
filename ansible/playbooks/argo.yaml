@@ -1,0 +1,28 @@
+---
+- hosts: localhost
+  gather_facts: false
+  vars:
+    kubeconfig_path: "{{ playbook_dir }}/../../admin.conf"
+  tasks:
+
+    - name: Create ArgoCD namespace
+      kubernetes.core.k8s:
+        api_version: v1
+        kind: Namespace
+        name: argocd
+        state: present
+      environment:
+        KUBECONFIG: "{{ kubeconfig_path }}"
+
+    - name: Install ArgoCD via official manifest
+      command: >
+        kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+      environment:
+        KUBECONFIG: "{{ kubeconfig_path }}"
+
+    - name: Apply ArgoCD application for NGINX
+      kubernetes.core.k8s:
+        state: present
+        definition: "{{ lookup('file', '../files/nginx-app.yaml') }}"
+      environment:
+        KUBECONFIG: "{{ kubeconfig_path }}"

@@ -29,28 +29,3 @@
   args:
     creates: /etc/cni/net.d/10-flannel.conflist
 
-- name: Create argocd namespace
-  kubernetes.core.k8s:
-    api_version: v1
-    kind: Namespace
-    name: argocd
-    state: present
-  environment:
-    KUBECONFIG: /etc/kubernetes/admin.conf
-
-- name: Install ArgoCD
-  shell: |
-    kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-  environment:
-    KUBECONFIG: /etc/kubernetes/admin.conf
-  args:
-    creates: /etc/kubernetes/argocd_installed
-
-- name: Apply ArgoCD Application for NGINX
-  kubernetes.core.k8s:
-    state: present
-    definition: "{{ lookup('file', 'files/nginx-app.yaml') }}"
-  environment:
-    KUBECONFIG: /etc/kubernetes/admin.conf
-
-
