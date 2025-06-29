@@ -1,5 +1,5 @@
 ---
-- name: Create worker test file
-  file:
-    path: /tmp/worker_test_file
-    state: touch
+- name: Join the worker node to the cluster
+  command: "{{ hostvars[groups['master'][0]].join_command.stdout }}"
+  args:
+    creates: /etc/kubernetes/kubelet.conf

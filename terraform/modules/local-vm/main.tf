@@ -6,7 +6,8 @@ bash -c 'multipass launch \
 --cpus ${var.master_cpus} \
 --memory ${var.master_mem} \
 --disk ${var.master_disk_size} \
---cloud-init <(echo "${templatefile("${path.module}/../../cloud-init/local-cloud-init.yaml.tmpl", { ssh_pub_key = file("${var.ssh_pub_key_path}") })}")'
+--cloud-init <(echo "${templatefile("${path.module}/../../cloud-init/local-cloud-init.yaml.tmpl", { ssh_pub_key = file("${var.ssh_pub_key_path}") })}") \
+22.04'
 EOC
   }
 }
@@ -21,7 +22,8 @@ bash -c 'multipass launch \
 --cpus ${var.worker_cpus} \
 --memory ${var.worker_mem} \
 --disk ${var.worker_disk_size} \
---cloud-init <(echo "${templatefile("${path.module}/../../cloud-init/local-cloud-init.yaml.tmpl", { ssh_pub_key = file("${var.ssh_pub_key_path}") })}")'
+--cloud-init <(echo "${templatefile("${path.module}/../../cloud-init/local-cloud-init.yaml.tmpl", { ssh_pub_key = file("${var.ssh_pub_key_path}") })}") \
+22.04'
 EOC
   }
 }
