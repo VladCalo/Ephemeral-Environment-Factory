@@ -1,6 +1,6 @@
 terraform/.terraform.lock.hcl
 terraform/.terraform
 terraform/terraform.tfstate*
-admin.conf
+admin*.conf
 .venv
 .vscode

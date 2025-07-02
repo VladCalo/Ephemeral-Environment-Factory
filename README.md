@@ -12,13 +12,14 @@ kubectl port-forward svc/argocd-server -n argocd 8080:443
 https://localhost:8080
 admin/1DKJwL8voH07qgzK
 
-# TODO: 
+# PROVISION: 
 provison steps refactor:
 terraform
 ansible playbook on hosts
 ansible argoCD local
 
-
+# TODO
+permanent argoCD portforward
 read about admin.conf from multiple clusters. 
 fix admin.conf in argo.yaml because when executing then i need to repoint in root
 dynamic ips

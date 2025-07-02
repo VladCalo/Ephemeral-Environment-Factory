@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: 'https://github.com/VladCalo/Ephemeral-Environment-Factory.git'
-    path: my-apps/nginx-chart
+    path: helm/nginx-chart
     targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc

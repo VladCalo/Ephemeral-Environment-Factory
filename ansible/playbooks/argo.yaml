@@ -20,9 +20,12 @@
       environment:
         KUBECONFIG: "{{ kubeconfig_path }}"
 
-    - name: Apply ArgoCD application for NGINX
+    - name: Apply all ArgoCD apps
       kubernetes.core.k8s:
         state: present
-        definition: "{{ lookup('file', '../files/nginx-app.yaml') }}"
+        definition: "{{ lookup('file', item) }}"
+      with_fileglob:
+        - "{{ playbook_dir }}/../../argocd/*-app.yaml"
       environment:
         KUBECONFIG: "{{ kubeconfig_path }}"
+
