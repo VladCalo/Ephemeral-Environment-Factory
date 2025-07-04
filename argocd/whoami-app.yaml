@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/VladCalo/Ephemeral-Environment-Factory.git'
+    repoURL: https://github.com/VladCalo/Ephemeral-Environment-Factory.git
     path: helm/whoami-chart
     targetRevision: HEAD
   destination:
