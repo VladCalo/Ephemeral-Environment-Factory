@@ -35,5 +35,6 @@ cd ../ansible/playbooks/
 ansible-playbook argo.yaml -e kubeconfig_path=/Users/vladcalomfirescu/.kube/azure.conf
 KUBECONFIG=~/.kube/azure.conf kubectl port-forward svc/argocd-server -n argocd 8080:443
 KUBECONFIG=~/.kube/azure.conf kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d && echo
+cd ../../terraform
 terraform destroy -var="enable_azure_cluster=true"
 ```
