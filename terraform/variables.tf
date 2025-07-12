@@ -1,3 +1,12 @@
+variable "enable_local_cluster" {
+  type    = bool
+  default = false
+}
+
+variable "enable_azure_cluster" {
+  type    = bool
+  default = false
+}
 variable "cluster_name" {
   default = "ephemeral-cluster"
 }

@@ -16,6 +16,7 @@ provider "azurerm" {
 }
 
 module "local_cluster" {
+  count = var.enable_local_cluster ? 1 : 0
   source = "./modules/local-vm"
 
   cluster_name      = var.cluster_name
@@ -31,7 +32,9 @@ module "local_cluster" {
 }
 
 module "azure_cluster" {
+  count = var.enable_azure_cluster ? 1 : 0
   source                  = "./modules/azure"
+
   cluster_name            = var.cluster_name
   azure_location          = var.azure_location
   azure_resource_group_name = var.azure_resource_group_name

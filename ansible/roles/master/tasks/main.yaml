@@ -32,6 +32,6 @@
 - name: Fetch admin.conf to local machine
   fetch:
     src: /etc/kubernetes/admin.conf
-    dest: "{{ playbook_dir }}/../admin.conf"
+    dest: ~/.kube/admin.conf
     flat: yes
 

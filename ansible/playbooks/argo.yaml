@@ -1,8 +1,6 @@
 ---
 - hosts: localhost
   gather_facts: false
-  vars:
-    kubeconfig_path: "{{ playbook_dir }}/../../admin.conf"
   tasks:
 
     - name: Create ArgoCD namespace
@@ -16,7 +14,7 @@
 
     - name: Install ArgoCD via official manifest
       command: >
-        kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+        kubectl apply --validate=false -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
       environment:
         KUBECONFIG: "{{ kubeconfig_path }}"
 
