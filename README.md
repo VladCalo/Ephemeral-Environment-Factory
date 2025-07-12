@@ -1,27 +1,39 @@
 # Ephemeral-Environment-Factory
 
-### On master:
-sudo cp /etc/kubernetes/admin.conf /home/ubuntu/admin.conf
-sudo chown ubuntu:ubuntu /home/ubuntu/admin.conf
+### First, go templates
+call the go binary from the go dir: ./generator nginx-app nginx-chart default
 
-multipass copy-files ephemeral-cluster-master:/home/ubuntu/admin.conf ./admin.conf
-export KUBECONFIG=$PWD/admin.conf
+### Test cluster
+1 worker / 2 nodes
 
-# ArgoCD UI
-kubectl port-forward svc/argocd-server -n argocd 8080:443
-https://localhost:8080
-admin/1DKJwL8voH07qgzK
+### Multipass
+```bash
+cd terraform/
+terraform init
+terraform plan -var="enable_local_cluster=true"
+terraform apply -var="enable_local_cluster=true"
+# manually update ansible hosts : TBD
+cd ..
+cd ansible/
+ansible-playbook playbook.yaml -v
+cd playbooks/
+ansible-playbook argo.yaml -e kubeconfig_path=/Users/vladcalomfirescu/.kube/admin.conf
+KUBECONFIG=~/.kube/admin.conf kubectl port-forward svc/argocd-server -n argocd 8080:443
+KUBECONFIG=~/.kube/admin.conf kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d && echo
+```
 
-# PROVISION: 
-provison steps refactor:
-terraform
-ansible playbook on hosts
-ansible argoCD local
-
-# TODO
-permanent argoCD portforward
-read about admin.conf from multiple clusters. 
-fix admin.conf in argo.yaml because when executing then i need to repoint in root
-dynamic ips
-multiple argo cd apps and how to make them dynamic. if someone want to use project and comes with their own helm chart
-multiple complex helm charts
+### Azure
+```bash
+cd terraform/
+terraform init
+terraform plan -var="enable_azure_cluster=true"
+terraform apply -var="enable_azure_cluster=true"
+terraform output -raw azure_kube_config > ~/.kube/azure.conf
+# ansible only used to configure multipass kube cluster
+# for azure use AKS with default config
+cd ../ansible/playbooks/
+ansible-playbook argo.yaml -e kubeconfig_path=/Users/vladcalomfirescu/.kube/azure.conf
+KUBECONFIG=~/.kube/azure.conf kubectl port-forward svc/argocd-server -n argocd 8080:443
+KUBECONFIG=~/.kube/azure.conf kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d && echo
+terraform destroy -var="enable_azure_cluster=true"
+```
