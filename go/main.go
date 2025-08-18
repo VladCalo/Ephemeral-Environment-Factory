@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -26,7 +27,11 @@ func getGitRepoURL() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return strings.TrimSpace(out.String()), nil
+	repoURL := strings.TrimSpace(out.String())
+	if repoURL == "" {
+		return "", fmt.Errorf("git remote origin URL is empty")
+	}
+	return repoURL, nil
 }
 
 func normalizeRepoURL(repoURL string) string {
@@ -42,18 +47,28 @@ func main() {
 		log.Fatalf("Usage: %s <appName> <chartName> <namespace>", os.Args[0])
 	}
 
+	appName := os.Args[1]
+	chartName := os.Args[2]
+	namespace := os.Args[3]
+
+	// Basic validation
+	if appName == "" || chartName == "" || namespace == "" {
+		log.Fatalf("Error: appName, chartName, and namespace cannot be empty")
+	}
+
 	repoURL, err := getGitRepoURL()
 	if err != nil {
 		log.Fatalf("Error getting git repository URL: %v", err)
 	}
 	repoURL = normalizeRepoURL(repoURL)
 
-	appName := os.Args[1]
-	chartName := os.Args[2]
-	namespace := os.Args[3]
-
 	// Make chart path relative to the git root or current working dir
 	chartPath := filepath.Join("helm", chartName)
+
+	// Check if chart directory exists
+	if _, err := os.Stat(chartPath); os.IsNotExist(err) {
+		log.Fatalf("Error: chart directory does not exist: %s", chartPath)
+	}
 
 	// Resolve absolute paths for template + output
 	wd, err := os.Getwd()
@@ -61,9 +76,20 @@ func main() {
 		log.Fatalf("Error getting working directory: %v", err)
 	}
 
-	tmplPath := filepath.Join(wd, "templates", "app.yaml.tmpl")
-	outputDir := filepath.Join(wd, "..", "argocd")
+	// Template path should be relative to the go directory
+	tmplPath := filepath.Join(wd, "go", "templates", "app.yaml.tmpl")
+	outputDir := filepath.Join(wd, "argocd")
 	outputPath := filepath.Join(outputDir, appName+".yaml")
+
+	// Check if template exists
+	if _, err := os.Stat(tmplPath); os.IsNotExist(err) {
+		log.Fatalf("Error: template file not found: %s", tmplPath)
+	}
+
+	// Create output directory if it doesn't exist
+	if err := os.MkdirAll(outputDir, 0755); err != nil {
+		log.Fatalf("Error creating output directory: %v", err)
+	}
 
 	data := AppData{
 		AppName:   appName,

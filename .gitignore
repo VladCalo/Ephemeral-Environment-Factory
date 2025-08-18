@@ -4,3 +4,4 @@ terraform/terraform.tfstate*
 admin*.conf
 .venv
 .vscode
+go/generator

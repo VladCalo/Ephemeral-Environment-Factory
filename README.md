@@ -115,6 +115,7 @@ terraform plan -var="enable_local_cluster=true"
 terraform apply -var="enable_local_cluster=true"
 
 # Configure cluster with Ansible
+# manually update hosts.ini => automate
 cd ../ansible/
 ansible-playbook playbook.yaml -v
 
@@ -191,22 +192,10 @@ Applications are automatically generated from Helm charts using the Go template 
 
 **Project is not yet finished** - The following areas need completion:
 
-- [ ] **Error Handling**: Improved error handling and validation
-- [ ] **Security**: Enhanced security configurations and RBAC
-- [ ] **Monitoring**: Integration with monitoring and logging solutions
-- [ ] **Testing**: Comprehensive test suite and validation
-- [ ] **Documentation**: API documentation and user guides
-- [ ] **CI/CD**: Automated testing and deployment pipelines
-- [ ] **Multi-cloud**: Support for additional cloud providers
-- [ ] **Scaling**: Horizontal scaling and load balancing
-- [ ] **Backup**: Data persistence and backup strategies
-
-## Contributing
-
-This project is actively under development. Contributions are welcome in the following areas:
-
-- Infrastructure improvements
-- Security enhancements
-- Documentation updates
-- Testing and validation
-- New feature development
+- ✅ **Error Handling**: Improved error handling and validation
+- ❌ **Automate Deploy**: Create build script to automate cloud/local + automate multipass hosts.ini IPs
+- ❌ **TTL Cleanup**: TTL
+- ❌ **Security**: Enhanced security configurations and RBAC
+- ❌ **Monitoring**: Integration with monitoring and logging solutions
+- ❌ **CI/CD**: Automated testing and deployment pipelines
+- ❌ **Scaling**: Horizontal scaling and load balancing
