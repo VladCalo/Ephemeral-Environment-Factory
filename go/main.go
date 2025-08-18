@@ -51,7 +51,6 @@ func main() {
 	chartName := os.Args[2]
 	namespace := os.Args[3]
 
-	// Basic validation
 	if appName == "" || chartName == "" || namespace == "" {
 		log.Fatalf("Error: appName, chartName, and namespace cannot be empty")
 	}
@@ -62,31 +61,25 @@ func main() {
 	}
 	repoURL = normalizeRepoURL(repoURL)
 
-	// Make chart path relative to the git root or current working dir
 	chartPath := filepath.Join("helm", chartName)
 
-	// Check if chart directory exists
 	if _, err := os.Stat(chartPath); os.IsNotExist(err) {
 		log.Fatalf("Error: chart directory does not exist: %s", chartPath)
 	}
 
-	// Resolve absolute paths for template + output
 	wd, err := os.Getwd()
 	if err != nil {
 		log.Fatalf("Error getting working directory: %v", err)
 	}
 
-	// Template path should be relative to the go directory
 	tmplPath := filepath.Join(wd, "go", "templates", "app.yaml.tmpl")
 	outputDir := filepath.Join(wd, "argocd")
 	outputPath := filepath.Join(outputDir, appName+".yaml")
 
-	// Check if template exists
 	if _, err := os.Stat(tmplPath); os.IsNotExist(err) {
 		log.Fatalf("Error: template file not found: %s", tmplPath)
 	}
 
-	// Create output directory if it doesn't exist
 	if err := os.MkdirAll(outputDir, 0755); err != nil {
 		log.Fatalf("Error creating output directory: %v", err)
 	}
@@ -115,5 +108,5 @@ func main() {
 		log.Fatalf("Error rendering template: %v", err)
 	}
 
-	log.Printf("✅ Generated: %s", outputPath)
+	log.Printf("Generated: %s", outputPath)
 }
