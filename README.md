@@ -94,6 +94,9 @@ terraform init
 terraform plan -var="enable_local_cluster=true"
 terraform apply -var="enable_local_cluster=true"
 
+cd ../scripts
+python parse_multipass.py
+
 cd ../ansible/
 ansible-playbook playbook.yaml -v
 
