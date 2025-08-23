@@ -2,9 +2,16 @@
 
 ## Overview
 
-The Ephemeral Environment Factory creates temporary Kubernetes clusters for development, testing, and CI/CD purposes. It provides infrastructure automation for spinning up ephemeral Kubernetes environments using either local Multipass VMs or Azure Kubernetes Service (AKS).
+The Ephemeral Environment Factory is a **plug-and-play solution** that automatically spins up production-ready Kubernetes clusters in minutes. Deploy clusters locally using Multipass VMs or in the cloud with Azure AKS - all with a single command.
 
-**Note**: This repository focuses solely on infrastructure provisioning and cluster setup. For application deployment and GitOps workflows, see [GitOps-Platform-Factory](https://github.com/vladcalo/GitOps-Platform-Factory) repository.
+**Purpose**: Infrastructure automation for development, testing, and CI/CD environments. This repository handles cluster provisioning and setup. For application deployment via GitOps, see [GitOps-Platform-Factory](https://github.com/vladcalo/GitOps-Platform-Factory).
+
+## Quick Summary
+
+**What it does**: Automatically creates Kubernetes clusters (local or cloud)  
+**How to use**: `./build.sh apply multipass` or `./build.sh apply aks`  
+**Time to deploy**: ~5 minutes for a fully functional cluster  
+**What you get**: Production-ready K8s cluster with networking, storage, and monitoring
 
 ## Architecture
 
@@ -53,11 +60,17 @@ Ephemeral-Environment-Factory/
 
 ## Key Features
 
+### Plug-and-Play Deployment
+
+- **Single Command**: `./build.sh apply multipass` or `./build.sh apply aks`
+- **Zero Configuration**: Pre-configured cluster settings ready to use
+- **Automatic Setup**: Infrastructure, networking, and Kubernetes components deployed automatically
+
 ### Multi-Environment Support
 
 - **Local Development**: Multipass-based VMs for local Kubernetes clusters
 - **Cloud Deployment**: Azure AKS integration for production-like environments
-- **Flexible Configuration**: Customizable cluster sizes and specifications
+- **Architecture Agnostic**: Works on ARM64 (Apple Silicon) and x86_64 systems
 
 ### Infrastructure Automation
 
