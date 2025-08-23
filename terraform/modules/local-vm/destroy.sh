@@ -8,5 +8,6 @@ multipass purge
 
 echo "Cleaning up Terraform state..."
 rm -rf ../../terraform.tfstate*
+rm -f ~/.kube/admin.conf
 
 echo "Done."

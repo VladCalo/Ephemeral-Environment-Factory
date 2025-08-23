@@ -4,4 +4,4 @@ terraform/terraform.tfstate*
 admin*.conf
 .venv
 .vscode
-go/generator
+terraform/.terraform.tfstate.lock.info
