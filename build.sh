@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -x
-
 check_multipass() {
     if ! command -v multipass &> /dev/null; then
         echo "Multipass not found. Please install multipass first."
