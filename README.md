@@ -1,8 +1,5 @@
 # Ephemeral Environment Factory
 
-**⚠️ Project Status: Work in Progress**  
-This project is currently under active development and is not yet complete. Some features may be incomplete or require additional configuration.
-
 ## Overview
 
 The Ephemeral Environment Factory creates temporary Kubernetes clusters for development, testing, and CI/CD purposes. It provides infrastructure automation for spinning up ephemeral Kubernetes environments using either local Multipass VMs or Azure Kubernetes Service (AKS).
@@ -30,6 +27,7 @@ The project consists of two main layers:
 
 - **Master**: 2 CPU cores, 2GB RAM, 10GB disk
 - **Workers**: 1 CPU core, 1GB RAM, 10GB disk each
+- **Architecture**: ARM64/x86_64 agnostic (works on Apple Silicon, Intel, AMD)
 
 **Default Azure Cluster**: AKS with Standard_B2s nodes, Kubernetes 1.32.5
 
@@ -77,48 +75,39 @@ Ephemeral-Environment-Factory/
 - **Multipass** (for local clusters)
 - **Azure CLI** (for Azure clusters)
 
-### Dependencies
-
-```bash
-# Install Python dependencies
-pip install -r requirements.txt
-```
-
 ## Quick Start
 
-### 1. Deploy Local Cluster (Multipass)
+### Automated Deployment
+
+Use the build script to automate the entire deployment process:
 
 ```bash
-cd terraform/
-terraform init
-terraform plan -var="enable_local_cluster=true"
-terraform apply -var="enable_local_cluster=true"
+# Deploy local cluster (Multipass)
+./build.sh apply multipass
 
-cd ../scripts
-python parse_multipass.py
+# Deploy Azure cluster (AKS)
+./build.sh apply aks
 
-cd ../ansible/
-ansible-playbook playbook.yaml -v
-
-#Clean-up
-cd terraform/modules/local-vm
-bash destroy.sh
+# Destroy clusters
+./build.sh destroy multipass
+./build.sh destroy aks
 ```
 
-### 2. Deploy Azure Cluster (AKS)
+### What the Build Script Does
 
-```bash
-cd terraform/
-terraform init
-terraform plan -var="enable_azure_cluster=true"
-terraform apply -var="enable_azure_cluster=true"
+**For Multipass:**
 
-# Get kubeconfig
-terraform output -raw azure_kube_config > ~/.kube/azure.conf
+- Checks if multipass is installed and running
+- Starts multipass automatically if needed
+- Runs terraform init/plan/apply
+- Updates ansible inventory with current IPs
+- Runs ansible playbook for cluster setup
 
-# Cleanup
-terraform destroy -var="enable_azure_cluster=true"
-```
+**For AKS:**
+
+- Checks if Azure CLI is installed and authenticated
+- Runs terraform init/plan/apply
+- Exports kubeconfig to ~/.kube/azure.conf
 
 ## Ansible Configuration
 
@@ -131,8 +120,8 @@ The Ansible playbooks handle:
 
 ## Development Workflow
 
-1. **Deploy Infrastructure**: Use Terraform to provision cluster
-2. **Configure Cluster**: Run Ansible playbooks for setup
+1. **Automated Deployment**: Use `./build.sh apply multipass` or `./build.sh apply aks`
+2. **Cluster Ready**: Infrastructure and configuration handled automatically
 3. **Connect to Cluster**: Use kubectl to interact with the cluster
 4. **Deploy Applications**: Use the GitOps-Platform-Factory for application deployment
 
@@ -144,12 +133,45 @@ After provisioning a cluster with this repository, you can:
 2. **Configure GitOps**: Use the GitOps-Platform-Factory to deploy applications
 3. **Manage Applications**: Handle application lifecycle through ArgoCD
 
+## Kubectl Configuration
+
+### Local Cluster (Multipass)
+
+After successful deployment, the kubeconfig is stored at:
+
+```bash
+~/.kube/admin.conf
+```
+
+Use it with:
+
+```bash
+export KUBECONFIG=~/.kube/admin.conf
+kubectl get nodes
+```
+
+### Azure Cluster (AKS)
+
+After successful deployment, the kubeconfig is stored at:
+
+```bash
+~/.kube/azure.conf
+```
+
+Use it with:
+
+```bash
+export KUBECONFIG=~/.kube/azure.conf
+kubectl get nodes
+```
+
 ## Current Limitations
 
 **Project is not yet finished** - The following areas need completion:
 
 - ✅ **Error Handling**: Improved error handling and validation
-- ❌ **Automate Deploy**: Create build script to automate cloud/local + automate multipass hosts.ini IPs
+- ✅ **Automate Deploy**: Build script automates cloud/local deployment + multipass hosts.ini IPs
+- ❌ **Build Optimizations**: current 8 mins, target 1 mins with prebuilt images
 - ❌ **TTL Cleanup**: TTL
 - ❌ **Security**: Enhanced security configurations and RBAC
 - ❌ **Monitoring**: Integration with monitoring and logging solutions
