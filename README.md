@@ -184,10 +184,7 @@ kubectl get nodes
 
 - ✅ **Error Handling**: Improved error handling and validation
 - ✅ **Automate Deploy**: Build script automates cloud/local deployment + multipass hosts.ini IPs
-- ❌ **Build Optimizations**: current 8 mins, target 1 mins with prebuilt images
 - ❌ **TTL Cleanup**: TTL
-- ❌ **Security**: Enhanced security configurations and RBAC
-- ❌ **Monitoring**: Integration with monitoring and logging solutions
 - ❌ **CI/CD**: Automated testing and deployment pipelines
 - ❌ **Scaling**: Horizontal scaling and load balancing
 
