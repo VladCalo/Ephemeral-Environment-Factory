@@ -9,7 +9,7 @@ The Ephemeral Environment Factory is a **plug-and-play solution** that automatic
 ## Quick Summary
 
 **What it does**: Automatically creates Kubernetes clusters (local or cloud)  
-**How to use**: `./build.sh apply multipass` or `./build.sh apply aks`  
+**How to use**: `./manage.sh apply multipass` or `./manage.sh apply aks`  
 **Time to deploy**: ~5 minutes for a fully functional cluster
 **Resources**: Production-ready K8s cluster with networking, storage and monitoring
 
@@ -38,31 +38,11 @@ The project consists of two main layers:
 
 **Default Azure Cluster**: AKS with Standard_B2s nodes, Kubernetes 1.32.5
 
-## Project Structure
-
-```
-Ephemeral-Environment-Factory/
-├── ansible/                    # Ansible configuration and playbooks
-│   ├── inventory/             # Host inventory
-│   └── roles/                # Ansible roles for cluster setup
-│       ├── common/           # Shared configuration tasks
-│       ├── master/           # Kubernetes master node setup
-│       └── worker/           # Kubernetes worker node setup
-├── terraform/               # IaC
-│   ├── modules/             # Terraform modules
-│   │   ├── azure/          # Azure AKS module
-│   │   └── local-vm/       # Multipass VM module
-│   ├── cloud-init/          # VM initialization templates
-│   └── main.tf             # Main Terraform configuration
-├── requirements.txt         # Python dependencies for Ansible
-└── build.sh                # Build automation script
-```
-
 ## Key Features
 
 ### Plug-and-Play Deployment
 
-- **Single Command**: `./build.sh apply multipass` or `./build.sh apply aks`
+- **Single Command**: `./manage.sh apply multipass` or `./manage.sh apply aks`
 - **Zero Configuration**: Pre-configured cluster settings ready to use
 - **Automatic Setup**: Infrastructure, networking and Kubernetes components deployed automatically
 
@@ -96,23 +76,43 @@ Ephemeral-Environment-Factory/
 
 ### Automated Deployment
 
-Use the build script to automate the entire deployment process:
+Use the manage script to automate the entire deployment process:
 
 ```bash
 # Deploy local cluster (Multipass)
-./build.sh apply multipass
+./manage.sh apply multipass
 
 # Deploy Azure cluster (AKS)
-./build.sh apply aks
+./manage.sh apply aks
 
 # Destroy clusters
-./build.sh destroy multipass
-./build.sh destroy aks
+./manage.sh destroy multipass
+./manage.sh destroy aks
+```
+
+## Project Structure
+
+```
+Ephemeral-Environment-Factory/
+├── ansible/                    # Ansible configuration and playbooks
+│   ├── inventory/             # Host inventory
+│   └── roles/                # Ansible roles for cluster setup
+│       ├── common/           # Shared configuration tasks
+│       ├── master/           # Kubernetes master node setup
+│       └── worker/           # Kubernetes worker node setup
+├── terraform/               # IaC
+│   ├── modules/             # Terraform modules
+│   │   ├── azure/          # Azure AKS module
+│   │   └── local-vm/       # Multipass VM module
+│   ├── cloud-init/          # VM initialization templates
+│   └── main.tf             # Main Terraform configuration
+├── requirements.txt         # Python dependencies for Ansible
+└── manage.sh                # Manage automation script
 ```
 
 ## Development Workflow
 
-1. **Automated Deployment**: Use `./build.sh apply multipass` or `./build.sh apply aks`
+1. **Automated Deployment**: Use `./manage.sh apply multipass` or `./manage.sh apply aks`
 2. **Cluster Ready**: Infrastructure and configuration handled automatically
 3. **Connect to Cluster**: Use kubectl to interact with the cluster
 4. **Deploy Applications**: Use the GitOps-Platform-Factory for application deployment
