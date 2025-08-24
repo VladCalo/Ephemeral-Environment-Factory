@@ -2,16 +2,16 @@
 
 ## Overview
 
-The Ephemeral Environment Factory is a **plug-and-play solution** that automatically spins up production-ready Kubernetes clusters in minutes. Deploy clusters locally using Multipass VMs or in the cloud with Azure AKS - all with a single command.
+The Ephemeral Environment Factory is a **plug-and-play solution** that automatically spins up Kubernetes clusters in minutes. Deploy clusters locally using Multipass VMs or in the cloud with Azure AKS - all with a single command.
 
-**Purpose**: Infrastructure automation for development, testing, and CI/CD environments. This repository handles cluster provisioning and setup. For application deployment via GitOps, see [GitOps-Platform-Factory](https://github.com/vladcalo/GitOps-Platform-Factory).
+**Purpose**: Infrastructure automation for development, testing and CI/CD environments. This repository handles cluster provisioning and setup. For application deployment via GitOps see [GitOps-Platform-Factory](https://github.com/vladcalo/GitOps-Platform-Factory).
 
 ## Quick Summary
 
 **What it does**: Automatically creates Kubernetes clusters (local or cloud)  
 **How to use**: `./build.sh apply multipass` or `./build.sh apply aks`  
-**Time to deploy**: ~5 minutes for a fully functional cluster  
-**What you get**: Production-ready K8s cluster with networking, storage, and monitoring
+**Time to deploy**: ~5 minutes for a fully functional cluster
+**Resources**: Production-ready K8s cluster with networking, storage and monitoring
 
 ## Architecture
 
@@ -19,14 +19,14 @@ The project consists of two main layers:
 
 ### Infrastructure Layer
 
-- **Terraform Modules**: Infrastructure as Code for both local and cloud environments
-- **Multipass Integration**: Local VM provisioning for development clusters
+- **Terraform Modules**: IaC for both local and cloud environments
+- **Multipass Integration**: Local VM provisioning for dev clusters
 - **Azure AKS**: Cloud-based Kubernetes clusters for production-like testing
 
-### Configuration Management
+### Config Management
 
 - **Ansible Playbooks**: Automated cluster setup and configuration
-- **Cloud-init Templates**: VM initialization and bootstrap configuration
+- **Cloud-init Templates**: VM initialization
 
 ## Current Cluster Configuration
 
@@ -43,12 +43,12 @@ The project consists of two main layers:
 ```
 Ephemeral-Environment-Factory/
 ├── ansible/                    # Ansible configuration and playbooks
-│   ├── inventory/             # Host inventory definitions
+│   ├── inventory/             # Host inventory
 │   └── roles/                # Ansible roles for cluster setup
 │       ├── common/           # Shared configuration tasks
 │       ├── master/           # Kubernetes master node setup
 │       └── worker/           # Kubernetes worker node setup
-├── terraform/               # Infrastructure as Code
+├── terraform/               # IaC
 │   ├── modules/             # Terraform modules
 │   │   ├── azure/          # Azure AKS module
 │   │   └── local-vm/       # Multipass VM module
@@ -64,7 +64,7 @@ Ephemeral-Environment-Factory/
 
 - **Single Command**: `./build.sh apply multipass` or `./build.sh apply aks`
 - **Zero Configuration**: Pre-configured cluster settings ready to use
-- **Automatic Setup**: Infrastructure, networking, and Kubernetes components deployed automatically
+- **Automatic Setup**: Infrastructure, networking and Kubernetes components deployed automatically
 
 ### Multi-Environment Support
 
@@ -76,6 +76,10 @@ Ephemeral-Environment-Factory/
 
 - **Terraform**: Complete infrastructure provisioning
 - **Ansible**: Automated cluster configuration and setup
+    - Docker and containerd installation
+    - Kubernetes components setup
+    - Cluster initialization (master/worker)
+    - Network plugin configuration (Flannel)
 - **Cloud-init**: VM initialization and bootstrap
 
 ## Prerequisites
@@ -106,31 +110,6 @@ Use the build script to automate the entire deployment process:
 ./build.sh destroy aks
 ```
 
-### What the Build Script Does
-
-**For Multipass:**
-
-- Checks if multipass is installed and running
-- Starts multipass automatically if needed
-- Runs terraform init/plan/apply
-- Updates ansible inventory with current IPs
-- Runs ansible playbook for cluster setup
-
-**For AKS:**
-
-- Checks if Azure CLI is installed and authenticated
-- Runs terraform init/plan/apply
-- Exports kubeconfig to ~/.kube/azure.conf
-
-## Ansible Configuration
-
-The Ansible playbooks handle:
-
-- Docker and containerd installation
-- Kubernetes components setup
-- Cluster initialization (master/worker)
-- Network plugin configuration (Flannel)
-
 ## Development Workflow
 
 1. **Automated Deployment**: Use `./build.sh apply multipass` or `./build.sh apply aks`
@@ -148,34 +127,11 @@ After provisioning a cluster with this repository, you can:
 
 ## Kubectl Configuration
 
-### Local Cluster (Multipass)
-
 After successful deployment, the kubeconfig is stored at:
 
 ```bash
-~/.kube/admin.conf
-```
-
-Use it with:
-
-```bash
-export KUBECONFIG=~/.kube/admin.conf
-kubectl get nodes
-```
-
-### Azure Cluster (AKS)
-
-After successful deployment, the kubeconfig is stored at:
-
-```bash
-~/.kube/azure.conf
-```
-
-Use it with:
-
-```bash
-export KUBECONFIG=~/.kube/azure.conf
-kubectl get nodes
+~/.kube/admin.conf # Multipass
+~/.kube/admin.conf # Azure
 ```
 
 ## Current Limitations
@@ -184,6 +140,7 @@ kubectl get nodes
 
 - ✅ **Error Handling**: Improved error handling and validation
 - ✅ **Automate Deploy**: Build script automates cloud/local deployment + multipass hosts.ini IPs
+- ❌ **Monitoring**: Cluster health monitoring
 - ❌ **TTL Cleanup**: TTL
 - ❌ **CI/CD**: Automated testing and deployment pipelines
 - ❌ **Scaling**: Horizontal scaling and load balancing
