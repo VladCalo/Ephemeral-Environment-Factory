@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Ephemeral Environment Factory is a **plug-and-play solution** that automatically spins up Kubernetes clusters in minutes. Deploy clusters locally using Multipass VMs or in the cloud with Azure AKS - all with a single command.
+The Ephemeral Environment Factory is a **plug-and-play solution** that automatically spins up Kubernetes clusters in minutes. Deploy clusters locally using Multipass VMs (architecture agnostic) or in the cloud with Azure AKS - all with a single command.
 
 **Purpose**: Infrastructure automation for development, testing and CI/CD environments. This repository handles cluster provisioning and setup. For application deployment via GitOps see [GitOps-Platform-Factory](https://github.com/vladcalo/GitOps-Platform-Factory).
 
