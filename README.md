@@ -57,10 +57,10 @@ The project consists of two main layers:
 
 - **Terraform**: Complete infrastructure provisioning
 - **Ansible**: Automated cluster configuration and setup
-  - Docker and containerd installation
-  - Kubernetes components setup
-  - Cluster initialization (master/worker)
-  - Network plugin configuration (Flannel)
+    - Docker and containerd installation
+    - Kubernetes components setup
+    - Cluster initialization (master/worker)
+    - Network plugin configuration (Flannel)
 - **Cloud-init**: VM initialization and bootstrap
 
 ## Prerequisites
