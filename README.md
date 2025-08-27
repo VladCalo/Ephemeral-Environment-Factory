@@ -11,6 +11,7 @@ The Ephemeral Environment Factory is a **plug-and-play solution** that automatic
 **What it does**: Automatically creates Kubernetes clusters (local or cloud)  
 **How to use**: `./manage.sh apply multipass` or `./manage.sh apply aks`  
 **Time to deploy**: ~5 minutes for a fully functional cluster
+**!!!SSH Keys:**: generate ssh keys in ~/.ssh/ (multipass makes use of it)
 **Resources**: Production-ready K8s cluster with networking, storage and monitoring
 
 ## Architecture
@@ -101,11 +102,18 @@ Ephemeral-Environment-Factory/
 │       ├── master/           # Kubernetes master node setup
 │       └── worker/           # Kubernetes worker node setup
 ├── terraform/               # IaC
+│   ├── multipass/           # Multipass configuration
+│   │   ├── main.tf         # Multipass main config
+│   │   ├── variables.tf    # Multipass variables
+│   │   └── outputs.tf      # Multipass outputs
+│   ├── aks/                # AKS configuration
+│   │   ├── main.tf         # AKS main config
+│   │   ├── variables.tf    # AKS variables
+│   │   └── outputs.tf      # AKS outputs
 │   ├── modules/             # Terraform modules
 │   │   ├── azure/          # Azure AKS module
 │   │   └── local-vm/       # Multipass VM module
-│   ├── cloud-init/          # VM initialization templates
-│   └── main.tf             # Main Terraform configuration
+│   └── cloud-init/          # VM initialization templates
 ├── requirements.txt         # Python dependencies for Ansible
 └── manage.sh                # Manage automation script
 ```
@@ -131,7 +139,7 @@ After successful deployment, the kubeconfig is stored at:
 
 ```bash
 ~/.kube/admin.conf # Multipass
-~/.kube/admin.conf # Azure
+~/.kube/azure.conf # Azure
 ```
 
 ## Current Limitations

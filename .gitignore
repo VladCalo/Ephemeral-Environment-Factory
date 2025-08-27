@@ -1,7 +1,12 @@
-terraform/.terraform.lock.hcl
-terraform/.terraform
-terraform/terraform.tfstate*
-admin*.conf
+terraform/multipass/.terraform.lock.hcl
+terraform/multipass/.terraform
+terraform/multipass/terraform.tfstate*
+terraform/multipass/.terraform.tfstate.lock.info
+
+terraform/aks/.terraform.lock.hcl
+terraform/aks/.terraform
+terraform/aks/terraform.tfstate*
+terraform/aks/.terraform.tfstate.lock.info
+
 .venv
 .vscode
-terraform/.terraform.tfstate.lock.info

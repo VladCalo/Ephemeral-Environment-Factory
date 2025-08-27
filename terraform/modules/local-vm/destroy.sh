@@ -7,6 +7,5 @@ multipass delete --purge $(multipass list | grep $CLUSTER_PREFIX | awk '{print $
 multipass purge
 
 echo "Cleaning up Terraform state..."
-rm -rf ../../terraform.tfstate*
 
 echo "Done."
