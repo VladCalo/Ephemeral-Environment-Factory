@@ -3,3 +3,8 @@
   command: "{{ hostvars[groups['master'][0]].join_command.stdout }}"
   args:
     creates: /etc/kubernetes/kubelet.conf
+  retries: 5
+  delay: 30
+  register: join_result
+  until: join_result is not failed
+  failed_when: join_result.rc != 0 and not join_result.stdout

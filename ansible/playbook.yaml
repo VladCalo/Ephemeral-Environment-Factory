@@ -1,15 +1,27 @@
 ---
 - hosts: all
   become: true
+  gather_facts: yes
+  vars:
+    ansible_command_timeout: 300
+    ansible_ssh_timeout: 60
   roles:
     - common
 
 - hosts: master
   become: true
+  gather_facts: yes
+  vars:
+    ansible_command_timeout: 300
+    ansible_ssh_timeout: 60
   roles:
     - master
 
 - hosts: workers
   become: true
+  gather_facts: yes
+  vars:
+    ansible_command_timeout: 300
+    ansible_ssh_timeout: 60
   roles:
     - worker
