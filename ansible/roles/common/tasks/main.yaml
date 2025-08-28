@@ -3,6 +3,8 @@
   apt:
     update_cache: yes
     upgrade: dist
+  retries: 3
+  delay: 10
 
 - name: Install prerequisites
   apt:
@@ -13,17 +15,25 @@
       - gnupg
       - lsb-release
     state: present
+  retries: 3
+  delay: 10
 
 - name: Install Docker using official convenience script (handles any architecture)
   shell: curl -fsSL https://get.docker.com | sh
   args:
     creates: /usr/bin/docker
+  retries: 3
+  delay: 15
+  register: docker_install
+  failed_when: docker_install.rc != 0 and not docker_install.stdout
 
 - name: Start and enable Docker
   service:
     name: docker
     enabled: yes
     state: started
+  retries: 3
+  delay: 5
 
 - name: Add user to docker group
   user:
@@ -39,6 +49,8 @@
 - name: Generate default containerd config
   shell: containerd config default
   register: containerd_config
+  retries: 2
+  delay: 5
 
 - name: Set SystemdCgroup = true in containerd config
   set_fact:
@@ -54,17 +66,23 @@
     name: containerd
     enabled: yes
     state: restarted
+  retries: 3
+  delay: 5
 
 - name: Add Kubernetes GPG key
   ansible.builtin.apt_key:
     url: https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key
     state: present
+  retries: 3
+  delay: 10
 
 - name: Add Kubernetes APT repository
   ansible.builtin.apt_repository:
     repo: "deb https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /"
     state: present
     filename: kubernetes
+  retries: 3
+  delay: 10
 
 - name: Install Kubernetes components
   apt:
@@ -74,6 +92,10 @@
       - kubectl
     state: present
     update_cache: yes
+  retries: 3
+  delay: 30
+  register: k8s_install
+  until: k8s_install is not failed
 
 - name: Hold Kubernetes packages
   ansible.builtin.dpkg_selections:
@@ -83,6 +105,8 @@
     - kubelet
     - kubeadm
     - kubectl
+  retries: 2
+  delay: 5
 
 - name: Enable kubelet service
   service:
@@ -91,11 +115,13 @@
 
 - name: Disable swap
   shell: swapoff -a
+  retries: 2
+  delay: 5
 
 - name: Comment swap entries in fstab
   replace:
     path: /etc/fstab
-    regexp: '^([^#].* swap .*)$'
+    regexp: "^([^#].* swap .*)$"
     replace: '# \1'
 
 - name: Load required kernel modules
@@ -109,11 +135,15 @@
   modprobe:
     name: overlay
     state: present
+  retries: 2
+  delay: 5
 
 - name: Ensure br_netfilter module is loaded
   modprobe:
     name: br_netfilter
     state: present
+  retries: 2
+  delay: 5
 
 - name: Set sysctl parameters for Kubernetes networking
   copy:
@@ -125,3 +155,5 @@
 
 - name: Apply sysctl parameters
   command: sysctl --system
+  retries: 2
+  delay: 5

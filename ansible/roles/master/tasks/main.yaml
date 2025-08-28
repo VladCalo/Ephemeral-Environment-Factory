@@ -5,6 +5,9 @@
   args:
     creates: /etc/kubernetes/admin.conf
   register: kubeadm_init
+  retries: 3
+  delay: 30
+  until: kubeadm_init is not failed
   ignore_errors: false
 
 - name: Save kubeadm join command for workers
@@ -12,6 +15,8 @@
     kubeadm token create --print-join-command
   register: join_command
   changed_when: false
+  retries: 3
+  delay: 10
 
 - name: Copy kubeconfig to regular user
   shell: |
@@ -20,6 +25,8 @@
     chown {{ ansible_user | default('ubuntu') }}:{{ ansible_user | default('ubuntu') }} /home/{{ ansible_user | default('ubuntu') }}/.kube/config
   args:
     creates: "/home/{{ ansible_user | default('ubuntu') }}/.kube/config"
+  retries: 2
+  delay: 5
 
 - name: Apply Flannel CNI
   shell: |
@@ -28,10 +35,16 @@
     KUBECONFIG: /etc/kubernetes/admin.conf
   args:
     creates: /etc/cni/net.d/10-flannel.conflist
+  retries: 3
+  delay: 15
+  register: flannel_apply
+  until: flannel_apply is not failed
 
 - name: Fetch admin.conf to local machine
   fetch:
     src: /etc/kubernetes/admin.conf
     dest: ~/.kube/admin.conf
     flat: yes
+  retries: 3
+  delay: 10
 
