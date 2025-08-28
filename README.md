@@ -11,7 +11,7 @@ The Ephemeral Environment Factory is a **plug-and-play solution** that automatic
 - **What it does**: Automatically creates Kubernetes clusters (local or cloud)  
 - **How to use**: `./manage.sh apply multipass` or `./manage.sh apply aks`  
 - **Time to deploy**: ~5 minutes for a fully functional cluster
-- **SSH Keys:**: generate ssh keys in ~/.ssh/ (multipass makes use of it)
+- **!!!SSH Keys**: generate ssh keys in ~/.ssh/ (multipass makes use of it)
 - **Resources**: Production-ready K8s cluster with networking, storage and monitoring
 
 ## Architecture
