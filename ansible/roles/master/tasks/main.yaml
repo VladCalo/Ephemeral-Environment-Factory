@@ -1,4 +1,4 @@
-eck---
+---
 - name: Initialize Kubernetes control plane
   command: >
     kubeadm init --pod-network-cidr=10.244.0.0/16
@@ -69,5 +69,18 @@ eck---
     volumes:
       - /etc/prometheus:/etc/prometheus
     command: --config.file=/etc/prometheus/prometheus.yml
+    restart_policy: always
+    state: started
+
+- name: Run Grafana container
+  community.docker.docker_container:
+    name: grafana
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    env:
+      GF_SECURITY_ADMIN_USER: "admin"
+      GF_SECURITY_ADMIN_PASSWORD: "admin"
+      GF_USERS_ALLOW_SIGN_UP: "false"
     restart_policy: always
     state: started
