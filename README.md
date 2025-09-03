@@ -91,33 +91,6 @@ Use the manage script to automate the entire deployment process:
 ./manage.sh destroy aks
 ```
 
-## Project Structure
-
-```
-Ephemeral-Environment-Factory/
-├── ansible/                    # Ansible configuration and playbooks
-│   ├── inventory/             # Host inventory
-│   └── roles/                # Ansible roles for cluster setup
-│       ├── common/           # Shared configuration tasks
-│       ├── master/           # Kubernetes master node setup
-│       └── worker/           # Kubernetes worker node setup
-├── terraform/               # IaC
-│   ├── multipass/           # Multipass configuration
-│   │   ├── main.tf         # Multipass main config
-│   │   ├── variables.tf    # Multipass variables
-│   │   └── outputs.tf      # Multipass outputs
-│   ├── aks/                # AKS configuration
-│   │   ├── main.tf         # AKS main config
-│   │   ├── variables.tf    # AKS variables
-│   │   └── outputs.tf      # AKS outputs
-│   ├── modules/             # Terraform modules
-│   │   ├── azure/          # Azure AKS module
-│   │   └── local-vm/       # Multipass VM module
-│   └── cloud-init/          # VM initialization templates
-├── requirements.txt         # Python dependencies for Ansible
-└── manage.sh                # Manage automation script
-```
-
 ## Development Workflow
 
 1. **Automated Deployment**: Use `./manage.sh apply multipass` or `./manage.sh apply aks`
@@ -149,9 +122,7 @@ After successful deployment, the kubeconfig is stored at:
 - ✅ **Error Handling**: Improved error handling and validation
 - ✅ **Automate Deploy**: Build script automates cloud/local deployment + multipass hosts.ini IPs
 - ❌ **Monitoring**: Cluster health monitoring
-- ❌ **TTL Cleanup**: TTL
-- ❌ **CI/CD**: Automated testing and deployment pipelines
-- ❌ **Scaling**: Horizontal scaling and load balancing
+- ❌ **Scaling**: Load balancing
 
 ## Related Repositories
 

@@ -1,4 +1,4 @@
----
+eck---
 - name: Initialize Kubernetes control plane
   command: >
     kubeadm init --pod-network-cidr=10.244.0.0/16
@@ -48,3 +48,26 @@
   retries: 3
   delay: 10
 
+- name: Create prometheus directory
+  file:
+    path: /etc/prometheus
+    state: directory
+    mode: "0755"
+
+- name: Create prometheus config
+  template:
+    src: templates/prometheus.yml.j2
+    dest: /etc/prometheus/prometheus.yml
+    mode: "0644"
+
+- name: Run Prometheus container
+  community.docker.docker_container:
+    name: prometheus
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - /etc/prometheus:/etc/prometheus
+    command: --config.file=/etc/prometheus/prometheus.yml
+    restart_policy: always
+    state: started
