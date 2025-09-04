@@ -15,6 +15,7 @@ check_python_env() {
     [ ! -d ".venv" ] && python3 -m venv .venv
     source .venv/bin/activate
     pip install -r requirements.txt
+    ansible-galaxy collection install -r ansible/collections/requirements.yml
 }
 
 [ $# -ne 2 ] && { echo "Usage: $0 <apply|destroy> <multipass|aks>"; exit 1; }
