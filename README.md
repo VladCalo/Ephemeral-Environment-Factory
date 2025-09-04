@@ -37,7 +37,7 @@ The project consists of two main layers:
 - **Workers**: 1 CPU core, 1GB RAM, 10GB disk each
 - **Architecture**: ARM64/x86_64 agnostic (works on Apple Silicon, Intel, AMD)
 
-**Default Azure Cluster**: AKS with Standard_B2s nodes, Kubernetes 1.32.5
+**Default Azure Cluster**: AKS with Standard_B2s nodes, Kubernetes 1.32.5 (Azure 30 days free trail)
 
 ## Key Features
 
@@ -45,7 +45,7 @@ The project consists of two main layers:
 
 - **Single Command**: `./manage.sh apply multipass` or `./manage.sh apply aks`
 - **Zero Configuration**: Pre-configured cluster settings ready to use
-- **Automatic Setup**: Infrastructure, networking and Kubernetes components deployed automatically
+- **Automatic Setup**: Infrastructure, networking, Kubernetes and Monitoring stack components deployed automatically
 
 ### Multi-Environment Support
 
@@ -62,6 +62,14 @@ The project consists of two main layers:
     - Cluster initialization (master/worker)
     - Network plugin configuration (Flannel)
 - **Cloud-init**: VM initialization and bootstrap
+
+### Built-in Monitoring
+- **Grafana & Prometheus**: Cluster health
+    - Prometheus Dash: `<master-node-ip>`:9090
+    - Prometheus Metrics: `<master-node-ip>`:9100
+    - Grafana (default: admin/admin): `master-node-ip`:3000
+- Current dashboard its a minimal cluster health overview, new dashboards can be added in:
+`ansible/roles/master/grafana/dashboards`
 
 ## Prerequisites
 
@@ -121,7 +129,7 @@ After successful deployment, the kubeconfig is stored at:
 
 - ✅ **Error Handling**: Improved error handling and validation
 - ✅ **Automate Deploy**: Build script automates cloud/local deployment + multipass hosts.ini IPs
-- ❌ **Monitoring**: Cluster health monitoring
+- ✅ **Monitoring**: Cluster health monitoring
 - ❌ **Scaling**: Load balancing
 
 ## Related Repositories

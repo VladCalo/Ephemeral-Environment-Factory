@@ -84,3 +84,66 @@
       GF_USERS_ALLOW_SIGN_UP: "false"
     restart_policy: always
     state: started
+
+- name: Wait for Grafana to be ready
+  uri:
+    url: http://{{ hostvars['ephemeral-cluster-master'].ansible_host }}:3000/api/health
+    method: GET
+  register: grafana_health
+  retries: 30
+  delay: 10
+  until: grafana_health.status == 200
+
+- name: Add Prometheus data source to Grafana
+  become: false
+  delegate_to: localhost # delegate to local host and dont use sudo
+  run_once: true
+  uri:
+    url: "http://{{ hostvars['ephemeral-cluster-master'].ansible_host }}:3000/api/datasources"
+    method: POST
+    headers:
+      Authorization: "Basic {{ ('admin:admin') | b64encode }}"
+      Accept: application/json
+      Content-Type: application/json
+      X-Grafana-Org-Id: "1"
+    body_format: json
+    body:
+      name: "Prometheus"
+      type: "prometheus"
+      url: "http://{{ hostvars['ephemeral-cluster-master'].ansible_host }}:9090"
+      access: "proxy"
+      isDefault: true
+    status_code: 200,409
+    return_content: yes
+  register: prometheus_datasource
+  retries: 5
+  delay: 5
+  until: (prometheus_datasource is defined) and ((prometheus_datasource.status | default(0)) in [200, 409])
+
+- name: Import Kubernetes Cluster Monitoring Dashboard
+  become: false
+  delegate_to: localhost # delegate to local host and dont use sudo
+  run_once: true
+  uri:
+    url: "http://{{ hostvars['ephemeral-cluster-master'].ansible_host }}:3000/api/dashboards/import"
+    method: POST
+    headers:
+      Authorization: "Basic {{ ('admin:admin') | b64encode }}"
+      Content-Type: application/json
+      Accept: application/json
+      X-Grafana-Org-Id: "1"
+    body_format: json
+    body:
+      dashboard: "{{ lookup('file', '../grafana/dashboards/k8s-cluster-health.json') | from_json }}"
+      overwrite: true
+      inputs:
+        - name: "DS_PROMETHEUS"
+          type: "datasource"
+          pluginId: "prometheus"
+          value: "Prometheus"
+    status_code: 200
+    return_content: yes
+  register: dashboard_import
+  retries: 5
+  delay: 5
+  until: (dashboard_import is defined) and ((dashboard_import.status | default(0)) == 200)
